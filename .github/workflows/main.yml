@@ -18,17 +18,16 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Build in subdirectory
-        run: |
-          cd scip-rust
-          cargo build --release
+      - name: Build in scip-rust subdirectory
+        run: cargo build --release
+        working-directory: ./scip-rust
 
-      - name: Compress binary
-        run: |
-          Compress-Archive -Path scip-rust\target\release\scip-rust.exe -DestinationPath scip-rust-windows.zip
+      - name: Compress .exe file
+        run: Compress-Archive -Path target/release/scip-rust.exe -DestinationPath scip-rust-windows.zip
+        working-directory: ./scip-rust
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: scip-rust-windows
-          path: scip-rust-windows.zip
+          path: scip-rust/scip-rust-windows.zip
