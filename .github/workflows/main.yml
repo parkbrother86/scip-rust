@@ -1,9 +1,9 @@
 name: Build Windows Binary
 
 on:
-  workflow_dispatch:  # 수동 실행 허용
+  workflow_dispatch:
   push:
-    branches: [main]  # 또는 master 브랜치에 맞게 수정
+    branches: [main]
 
 jobs:
   build:
@@ -13,17 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Rust toolchain
+      - name: Install Rust
         uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
 
-      - name: Build with Cargo
-        run: cargo build --release
-
-      - name: Compress .exe file
+      - name: Build in subdirectory
         run: |
-          powershell Compress-Archive -Path target/release/scip-rust.exe -DestinationPath scip-rust-windows.zip
+          cd scip-rust
+          cargo build --release
+
+      - name: Compress binary
+        run: |
+          Compress-Archive -Path scip-rust\target\release\scip-rust.exe -DestinationPath scip-rust-windows.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
